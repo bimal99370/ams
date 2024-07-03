@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sucessfully added{{ player.name }}</title>
+</head>
+<body>
+    <h1>{{ player.name }}</h1>
+    <p>Age: {{ player.age }}</p>
+    <p>Gender: {{ player.gender }}</p>
+    <p>Team: {{ player.role }}</p>
+    <br>
+    <a href="{% url 'player_list' %}">Back to List</a>
+    <a href="{% url 'player_update' player.pk %}">Edit</a>
+    <a href="{% url 'player_delete' player.pk %}">Delete</a>
+</body>
+</html>

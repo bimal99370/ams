@@ -37,125 +37,165 @@
         h1 {
             color: #6200EE;
         }
+        .errorlist {
+            color: red;
+        }
+        .small-image {
+            max-width: 150px;
+            max-height: 150px;
+            display: block;
+            margin-top: 10px;
+        }
     </style>
+
 </head>
 <body>
-    <div class="container">
-        <h1 class="mb-4 text-center">{% if form.instance.pk %}Edit{% else %}Add{% endif %} Player</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <!-- Personal Information Section -->
-            <div class="section-heading">Personal Information</div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    {{ form.name.label_tag }}
-                    {{ form.name }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.image.label_tag }}
-                    {{ form.image }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.email.label_tag }}
-                    {{ form.email }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.date_of_birth.label_tag }}
-                    {{ form.date_of_birth }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.primary_contact_number.label_tag }}
-                    {{ form.primary_contact_number }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.secondary_contact_number.label_tag }}
-                    {{ form.secondary_contact_number }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.gender.label_tag }}
-                    {{ form.gender }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.state.label_tag }}
-                    {{ form.state }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.district.label_tag }}
-                    {{ form.district }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.pincode.label_tag }}
-                    {{ form.pincode }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.address.label_tag }}
-                    {{ form.address }}
-                </div>
-            </div>
 
-            <!-- Sports Related Information Section -->
-            <div class="section-heading">Sports Related Information</div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    {{ form.role.label_tag }}
-                    {{ form.role }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.batting_style.label_tag }}
-                    {{ form.batting_style }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.bowling_style.label_tag }}
-                    {{ form.bowling_style }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.handedness.label_tag }}
-                    {{ form.handedness }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.aadhar_number.label_tag }}
-                    {{ form.aadhar_number }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.sports_role.label_tag }}
-                    {{ form.sports_role }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.id_card_number.label_tag }}
-                    {{ form.id_card_number }}
-                </div>
-            </div>
+<div class="container">
+    <h1 class="mb-4 text-center">{% if form.instance.pk %}Updating an existing {% else %}Add{% endif %} Player
+        record</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-            <!-- Files and Documents Uploads Section -->
-            <div class="section-heading">Files and Documents Uploads</div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    {{ form.medical_certificates.label_tag }}
-                    {{ form.medical_certificates }}
-                </div>
+        <!-- Personal Information Section -->
+        <div class="section-heading">Personal Information</div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+                {{ form.name.errors }}
             </div>
+            <div class="form-group col-md-6">
+                {{ form.image.label_tag }}
+                {{ form.image }}
+                {% if form.instance.pk and form.instance.image %}
+                <a href="{{ form.instance.image.url }}" target="_blank">
+                    <img src="{{ form.instance.image.url }}" alt="Player Image" class="small-image">
+                </a>
+                {% endif %}
+                {{ form.image.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.date_of_birth.label_tag }}
+                {{ form.date_of_birth }}
+                {{ form.date_of_birth.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.primary_contact_number.label_tag }}
+                {{ form.primary_contact_number }}
+                {{ form.primary_contact_number.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.secondary_contact_number.label_tag }}
+                {{ form.secondary_contact_number }}
+                {{ form.secondary_contact_number.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.gender.label_tag }}
+                {{ form.gender }}
+                {{ form.gender.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.state.label_tag }}
+                {{ form.state }}
+                {{ form.state.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.district.label_tag }}
+                {{ form.district }}
+                {{ form.district.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.pincode.label_tag }}
+                {{ form.pincode }}
+                {{ form.pincode.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.address.label_tag }}
+                {{ form.address }}
+                {{ form.address.errors }}
+            </div>
+        </div>
 
-            <!-- Guardian Information Section -->
-            <div class="section-heading">Guardian Information</div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    {{ form.guardian_name.label_tag }}
-                    {{ form.guardian_name }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.relation.label_tag }}
-                    {{ form.relation }}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.guardian_mobile_number.label_tag }}
-                    {{ form.guardian_mobile_number }}
-                </div>
+        <!-- Sports Related Information Section -->
+        <div class="section-heading">Sports Related Information</div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                {{ form.role.label_tag }}
+                {{ form.role }}
+                {{ form.role.errors }}
             </div>
+            <div class="form-group col-md-6">
+                {{ form.batting_style.label_tag }}
+                {{ form.batting_style }}
+                {{ form.batting_style.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.bowling_style.label_tag }}
+                {{ form.bowling_style }}
+                {{ form.bowling_style.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.handedness.label_tag }}
+                {{ form.handedness }}
+                {{ form.handedness.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.aadhar_number.label_tag }}
+                {{ form.aadhar_number }}
+                {{ form.aadhar_number.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.sports_role.label_tag }}
+                {{ form.sports_role }}
+                {{ form.sports_role.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.id_card_number.label_tag }}
+                {{ form.id_card_number }}
+                {{ form.id_card_number.errors }}
+            </div>
+        </div>
 
-            <div class="text-center">
-                <button type="submit" class="btn btn-submit mt-3">Save</button>
+        <!-- Files and Documents Uploads Section -->
+        <div class="section-heading">Files and Documents Uploads</div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                {{ form.medical_certificates.label_tag }}
+                {{ form.medical_certificates }}
+                {{ form.medical_certificates.errors }}
             </div>
-        </form>
-    </div>
+        </div>
+
+        <!-- Guardian Information Section -->
+        <div class="section-heading">Guardian Information</div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                {{ form.guardian_name.label_tag }}
+                {{ form.guardian_name }}
+                {{ form.guardian_name.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.relation.label_tag }}
+                {{ form.relation }}
+                {{ form.relation.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.guardian_mobile_number.label_tag }}
+                {{ form.guardian_mobile_number }}
+                {{ form.guardian_mobile_number.errors }}
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-submit mt-3">Save</button>
+        </div>
+    </form>
+</div>
 </body>
 </html>

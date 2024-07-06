@@ -34,3 +34,40 @@ class PlayerForm(forms.ModelForm):
             'relation': forms.Select(attrs={'class': 'form-control'}),
             'guardian_mobile_number': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+    def clean_primary_contact_number(self):
+        data = self.cleaned_data.get('primary_contact_number')
+        if data and not data.isdigit():
+            raise forms.ValidationError("Primary contact number must contain only digits.")
+        return data
+
+    def clean_secondary_contact_number(self):
+        data = self.cleaned_data.get('secondary_contact_number')
+        if data and not data.isdigit():
+            raise forms.ValidationError("Secondary contact number must contain only digits.")
+        return data
+
+    def clean_aadhar_number(self):
+        data = self.cleaned_data.get('aadhar_number')
+        if data and (not data.isdigit() or len(data) != 12):
+            raise forms.ValidationError("Aadhar number must be 12 digits.")
+        return data
+
+    def clean_pincode(self):
+        data = self.cleaned_data.get('pincode')
+        if data and (not data.isdigit() or len(data) != 6):
+            raise forms.ValidationError("Pincode must be 6 digits.")
+        return data
+
+    def clean_state(self):
+        data = self.cleaned_data.get('state')
+        valid_states = [state[0] for state in Player.STATES]
+        if data not in valid_states:
+            raise forms.ValidationError("Invalid state selected.")
+        return data
+
+    def clean_district(self):
+        data = self.cleaned_data.get('district')
+        if data and (not data.isalpha() or len(data) < 3):
+            raise forms.ValidationError("District must contain only letters and be at least 3 characters long.")
+        return data

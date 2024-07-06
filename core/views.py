@@ -31,10 +31,12 @@ def player_create(request):
 def player_update(request, pk):
     player = get_object_or_404(Player, pk=pk)
     if request.method == "POST":
-        form = PlayerForm(request.POST, instance=player)
+        form = PlayerForm(request.POST, request.FILES, instance=player)
         if form.is_valid():
             player = form.save()
             return redirect('player_detail', pk=player.pk)
+        else:
+            print(form.errors)
     else:
         form = PlayerForm(instance=player)
     return render(request, 'core/player_form.html', {'form': form})

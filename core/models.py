@@ -78,6 +78,9 @@ class Player(models.Model):
 
     # Files/Documents Section
     medical_certificates = models.FileField(upload_to='certificates/', blank=True, null=True)
+    aadhar_card_upload = models.FileField(upload_to='documents/aadhar/', blank=True, null=True)
+    pan_card_upload = models.FileField(upload_to='documents/pan/', blank=True, null=True)
+    marksheets_upload = models.FileField(upload_to='documents/marksheets/', blank=True, null=True)
 
     # Parents/Guardian Information
     guardian_name = models.CharField(max_length=100, blank=True, null=True)

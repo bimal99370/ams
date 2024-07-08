@@ -60,66 +60,75 @@
     </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center">Player List</h1>
+<div class="container mt-5">
+    <h1 class="text-center">Player List</h1>
 
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search by name...">
-        </div>
-
-        <!-- Player Table -->
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>State</th>
-                    <th>Age</th>
-                    <th>Role</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="playerTableBody">
-                {% for player in players %}
-                <tr>
-                    <td>{{ player.id }}</td>
-                    <td>{{ player.name }}</td>
-                    <td>{{ player.state }}</td>
-                    <td>{{ player.age }}</td>
-                    <td>{{ player.role }}</td>
-                    <td class="text-center">
-                        <a href="{% url 'player_update' player.pk %}" class="btn btn-edit">Edit</a>
-                        <a href="{% url 'player_delete' player.pk %}" class="btn btn-delete">Delete</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <div class="d-flex justify-content-between mt-4">
-            <a href="{% url 'player_create' %}" class="btn btn-add">Add New Player</a>
-            <a href="{% url 'export_players_to_excel' %}" class="btn btn-success">Download as Excel</a>
-        </div>
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search by name...">
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            var searchValue = this.value.toLowerCase();
-            var rows = document.querySelectorAll('#playerTableBody tr');
+    <!-- Player Table -->
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>State</th>
+            <th>Age</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="playerTableBody">
+        {% for player in players %}
+        <tr>
+            <td>{{ player.id }}</td>
+            <td>{{ player.name }}</td>
+            <td>{{ player.state }}</td>
+            <td>{{ player.age }}</td>
+            <td>{{ player.role }}</td>
+            <td class="text-center">
+                <a href="{% url 'player_update' player.pk %}" class="btn btn-edit">Edit</a>
+                <a href="{% url 'player_delete' player.pk %}" class="btn btn-delete">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-            rows.forEach(function(row) {
-                var nameCell = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                if (nameCell.indexOf(searchValue) > -1) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{% url 'player_create' %}" class="btn btn-add">Add New Player</a>
+        <a href="{% url 'export_players_to_excel' %}" class="btn btn-success">Download as Excel</a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        var searchValue = this.value.toLowerCase();
+        var rows = document.querySelectorAll('#playerTableBody tr');
+
+        rows.forEach(function(row) {
+            var idCell = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+            var nameCell = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+            var stateCell = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+
+
+            if (idCell.indexOf(searchValue) > -1 ||
+                nameCell.indexOf(searchValue) > -1 ||
+                stateCell.indexOf(searchValue) > -1) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
         });
-    </script>
+    });
+</script>
+
+
+
 </body>
 </html>

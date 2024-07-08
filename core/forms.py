@@ -8,7 +8,8 @@ class PlayerForm(forms.ModelForm):
             'name', 'image', 'email', 'primary_contact_number', 'secondary_contact_number',
             'date_of_birth', 'gender', 'state', 'district', 'pincode', 'address', 'role',
             'batting_style', 'bowling_style', 'handedness', 'aadhar_number', 'sports_role',
-            'id_card_number', 'medical_certificates', 'guardian_name', 'relation', 'guardian_mobile_number'
+            'id_card_number', 'aadhar_card_upload', 'pan_card_upload', 'marksheets_upload',
+            'medical_certificates', 'guardian_name', 'relation', 'guardian_mobile_number'
         ]
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
@@ -30,10 +31,27 @@ class PlayerForm(forms.ModelForm):
             'sports_role': forms.TextInput(attrs={'class': 'form-control'}),
             'id_card_number': forms.TextInput(attrs={'class': 'form-control'}),
             'medical_certificates': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'aadhar_card_upload': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'pan_card_upload': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'marksheets_upload': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
             'guardian_name': forms.TextInput(attrs={'class': 'form-control'}),
             'relation': forms.Select(attrs={'class': 'form-control'}),
             'guardian_mobile_number': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(PlayerForm, self).__init__(*args, **kwargs)
+        # Mark fields as required
+        self.fields['name'].required = True
+        self.fields['email'].required = True
+        self.fields['primary_contact_number'].required = True
+        self.fields['date_of_birth'].required = True
+        self.fields['state'].required = True
+        self.fields['district'].required = True
+        self.fields['pincode'].required = True
+        self.fields['address'].required = True
+        self.fields['role'].required = True
+        self.fields['guardian_name'].required = True
 
     def clean_primary_contact_number(self):
         data = self.cleaned_data.get('primary_contact_number')
@@ -56,7 +74,8 @@ class PlayerForm(forms.ModelForm):
     def clean_pincode(self):
         data = self.cleaned_data.get('pincode')
         if data and (not data.isdigit() or len(data) != 6):
-            raise forms.ValidationError("Pincode must be 6 digits.")
+            raise forms.ValidationError("Pincode must be 6 digits, Pincode must be numbers")
+
         return data
 
     def clean_state(self):

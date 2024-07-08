@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Player</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -46,8 +48,11 @@
             display: block;
             margin-top: 10px;
         }
+        .required::after {
+            content: " *";
+            color: red;
+        }
     </style>
-
 </head>
 <body>
 
@@ -61,7 +66,7 @@
         <div class="section-heading">Personal Information</div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                {{ form.name.label_tag }}
+                {{ form.name.label_tag }}<span class="required"></span>
                 {{ form.name }}
                 {{ form.name.errors }}
             </div>
@@ -76,17 +81,17 @@
                 {{ form.image.errors }}
             </div>
             <div class="form-group col-md-6">
-                {{ form.email.label_tag }}
+                {{ form.email.label_tag }}<span class="required"></span>
                 {{ form.email }}
                 {{ form.email.errors }}
             </div>
             <div class="form-group col-md-6">
-                {{ form.date_of_birth.label_tag }}
+                {{ form.date_of_birth.label_tag }}<span class="required"></span>
                 {{ form.date_of_birth }}
                 {{ form.date_of_birth.errors }}
             </div>
             <div class="form-group col-md-6">
-                {{ form.primary_contact_number.label_tag }}
+                {{ form.primary_contact_number.label_tag }}<span class="required"></span>
                 {{ form.primary_contact_number }}
                 {{ form.primary_contact_number.errors }}
             </div>
@@ -101,22 +106,22 @@
                 {{ form.gender.errors }}
             </div>
             <div class="form-group col-md-6">
-                {{ form.state.label_tag }}
+                {{ form.state.label_tag }}<span class="required"></span>
                 {{ form.state }}
                 {{ form.state.errors }}
             </div>
             <div class="form-group col-md-6">
-                {{ form.district.label_tag }}
+                {{ form.district.label_tag }}<span class="required"></span>
                 {{ form.district }}
                 {{ form.district.errors }}
             </div>
             <div class="form-group col-md-6">
-                {{ form.pincode.label_tag }}
+                {{ form.pincode.label_tag }}<span class="required"></span>
                 {{ form.pincode }}
                 {{ form.pincode.errors }}
             </div>
             <div class="form-group col-md-6">
-                {{ form.address.label_tag }}
+                {{ form.address.label_tag }}<span class="required"></span>
                 {{ form.address }}
                 {{ form.address.errors }}
             </div>
@@ -126,7 +131,7 @@
         <div class="section-heading">Sports Related Information</div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                {{ form.role.label_tag }}
+                {{ form.role.label_tag }}<span class="required"></span>
                 {{ form.role }}
                 {{ form.role.errors }}
             </div>
@@ -146,7 +151,7 @@
                 {{ form.handedness.errors }}
             </div>
             <div class="form-group col-md-6">
-                {{ form.aadhar_number.label_tag }}
+                {{ form.aadhar_number.label_tag }}<span class="required"></span>
                 {{ form.aadhar_number }}
                 {{ form.aadhar_number.errors }}
             </div>
@@ -156,7 +161,7 @@
                 {{ form.sports_role.errors }}
             </div>
             <div class="form-group col-md-6">
-                {{ form.id_card_number.label_tag }}
+                {{ form.id_card_number.label_tag }}<span class="required"></span>
                 {{ form.id_card_number }}
                 {{ form.id_card_number.errors }}
             </div>
@@ -166,9 +171,24 @@
         <div class="section-heading">Files and Documents Uploads</div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                {{ form.medical_certificates.label_tag }}
+                {{ form.medical_certificates.label_tag }}<span class="required"></span>
                 {{ form.medical_certificates }}
                 {{ form.medical_certificates.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.aadhar_card_upload.label_tag }}<span class="required"></span>
+                {{ form.aadhar_card_upload }}
+                {{ form.aadhar_card_upload.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.pan_card_upload.label_tag }}
+                {{ form.pan_card_upload }}
+                {{ form.pan_card_upload.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.marksheets_upload.label_tag }}
+                {{ form.marksheets_upload }}
+                {{ form.marksheets_upload.errors }}
             </div>
         </div>
 
@@ -176,7 +196,7 @@
         <div class="section-heading">Guardian Information</div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                {{ form.guardian_name.label_tag }}
+                {{ form.guardian_name.label_tag }}<span class="required"></span>
                 {{ form.guardian_name }}
                 {{ form.guardian_name.errors }}
             </div>

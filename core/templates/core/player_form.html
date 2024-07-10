@@ -106,6 +106,11 @@
                 {{ form.gender.errors }}
             </div>
             <div class="form-group col-md-6">
+                {{ form.aadhar_number.label_tag }}<span class="required"></span>
+                {{ form.aadhar_number }}
+                {{ form.aadhar_number.errors }}
+            </div>
+            <div class="form-group col-md-6">
                 {{ form.state.label_tag }}<span class="required"></span>
                 {{ form.state }}
                 {{ form.state.errors }}
@@ -124,6 +129,11 @@
                 {{ form.address.label_tag }}<span class="required"></span>
                 {{ form.address }}
                 {{ form.address.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.nationality.label_tag }}<span class="required"></span>
+                {{ form.nationality }}
+                {{ form.nationality.errors }}
             </div>
         </div>
 
@@ -151,11 +161,6 @@
                 {{ form.handedness.errors }}
             </div>
             <div class="form-group col-md-6">
-                {{ form.aadhar_number.label_tag }}<span class="required"></span>
-                {{ form.aadhar_number }}
-                {{ form.aadhar_number.errors }}
-            </div>
-            <div class="form-group col-md-6">
                 {{ form.sports_role.label_tag }}
                 {{ form.sports_role }}
                 {{ form.sports_role.errors }}
@@ -164,6 +169,31 @@
                 {{ form.id_card_number.label_tag }}<span class="required"></span>
                 {{ form.id_card_number }}
                 {{ form.id_card_number.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.weight.label_tag }}
+                {{ form.weight }}
+                {{ form.weight.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.height.label_tag }}
+                {{ form.height }}
+                {{ form.height.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.age_category.label_tag }}
+                {{ form.age_category }}
+                {{ form.age_category.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.team.label_tag }}
+                {{ form.team }}
+                {{ form.team.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.position.label_tag }}
+                {{ form.position }}
+                {{ form.position.errors }}
             </div>
         </div>
 
@@ -209,6 +239,26 @@
                 {{ form.guardian_mobile_number.label_tag }}
                 {{ form.guardian_mobile_number }}
                 {{ form.guardian_mobile_number.errors }}
+            </div>
+        </div>
+
+        <!-- Wellness Report Section -->
+        <div class="section-heading">Wellness Report</div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                {{ form.disease.label_tag }}
+                {{ form.disease }}
+                {{ form.disease.errors }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.allergies.label_tag }}
+                {{ form.allergies }}
+                {{ form.allergies.errors }}
+            </div>
+            <div class="form-group col-md-12">
+                {{ form.additional_information.label_tag }}
+                {{ form.additional_information }}
+                {{ form.additional_information.errors }}
             </div>
         </div>
 

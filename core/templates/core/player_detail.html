@@ -1,16 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Sucessfully added{{ player.name }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ player.name }} Details</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .detail-section {
+            margin-bottom: 20px;
+        }
+        .detail-section h2 {
+            font-size: 1.25rem;
+            color: #6200EE;
+            border-bottom: 2px solid #6200EE;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+        .detail-section p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        .detail-section p span {
+            font-weight: bold;
+        }
+        .small-image {
+            max-width: 150px;
+            max-height: 150px;
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ player.name }}</h1>
-    <p>Age: {{ player.age }}</p>
-    <p>Gender: {{ player.gender }}</p>
-    <p>Team: {{ player.role }}</p>
-    <br>
-    <a href="{% url 'player_list' %}">Back to List</a>
-    <a href="{% url 'player_update' player.pk %}">Edit</a>
-    <a href="{% url 'player_delete' player.pk %}">Delete</a>
+<div class="container mt-5">
+    <h1>{{ player.name }}'s Details</h1>
+
+    <!-- Personal Information Section -->
+    <div class="detail-section">
+        <h2>Personal Information</h2>
+        <p><span>ID:</span> {{ player.id }}</p>
+        <p><span>Name:</span> {{ player.name }}</p>
+        <p><span>Email:</span> {{ player.email }}</p>
+        <p><span>Date of Birth:</span> {{ player.date_of_birth }}</p>
+        <p><span>Primary Contact Number:</span> {{ player.primary_contact_number }}</p>
+        <p><span>Secondary Contact Number:</span> {{ player.secondary_contact_number }}</p>
+        <p><span>Gender:</span> {{ player.gender }}</p>
+        <p><span>State:</span> {{ player.state }}</p>
+        <p><span>District:</span> {{ player.district }}</p>
+        <p><span>Pincode:</span> {{ player.pincode }}</p>
+        <p><span>Address:</span> {{ player.address }}</p>
+        {% if player.image %}
+            <p><span>Image:</span>
+                <a href="{{ player.image.url }}" target="_blank">
+                    <img src="{{ player.image.url }}" alt="Player Image" class="small-image">
+                </a>
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- Sports Related Information Section -->
+    <div class="detail-section">
+        <h2>Sports Related Information</h2>
+        <p><span>Role:</span> {{ player.role }}</p>
+        <p><span>Batting Style:</span> {{ player.batting_style }}</p>
+        <p><span>Bowling Style:</span> {{ player.bowling_style }}</p>
+        <p><span>Handedness:</span> {{ player.handedness }}</p>
+        <p><span>Aadhar Number:</span> {{ player.aadhar_number }}</p>
+        <p><span>Sports Role:</span> {{ player.sports_role }}</p>
+        <p><span>ID Card Number:</span> {{ player.id_card_number }}</p>
+    </div>
+
+    <!-- Files and Documents Uploads Section -->
+    <div class="detail-section">
+        <h2>Files and Documents Uploads</h2>
+        <p><span>Medical Certificates:</span> {{ player.medical_certificates }}</p>
+        <p><span>Aadhar Card Upload:</span> {{ player.aadhar_card_upload }}</p>
+        <p><span>PAN Card Upload:</span> {{ player.pan_card_upload }}</p>
+        <p><span>Marksheets Upload:</span> {{ player.marksheets_upload }}</p>
+    </div>
+
+    <!-- Guardian Information Section -->
+    <div class="detail-section">
+        <h2>Guardian Information</h2>
+        <p><span>Guardian Name:</span> {{ player.guardian_name }}</p>
+        <p><span>Relation:</span> {{ player.relation }}</p>
+        <p><span>Guardian Mobile Number:</span> {{ player.guardian_mobile_number }}</p>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{% url 'player_update' player.pk %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'player_list' %}" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
 </body>
 </html>

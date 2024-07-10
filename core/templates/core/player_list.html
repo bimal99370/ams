@@ -84,7 +84,7 @@
         {% for player in players %}
         <tr>
             <td>{{ player.id }}</td>
-            <td>{{ player.name }}</td>
+            <td><a href="{% url 'player_detail' player.pk %}">{{ player.name }}</a></td>
             <td>{{ player.state }}</td>
             <td>{{ player.age }}</td>
             <td>{{ player.role }}</td>
@@ -116,7 +116,6 @@
             var nameCell = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
             var stateCell = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
 
-
             if (idCell.indexOf(searchValue) > -1 ||
                 nameCell.indexOf(searchValue) > -1 ||
                 stateCell.indexOf(searchValue) > -1) {
@@ -127,8 +126,5 @@
         });
     });
 </script>
-
-
-
 </body>
 </html>

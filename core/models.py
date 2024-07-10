@@ -1,7 +1,6 @@
 from django.db import models
 from datetime import date
 
-
 class Player(models.Model):
     # Player Information
     name = models.CharField(max_length=100)
@@ -12,6 +11,7 @@ class Player(models.Model):
     date_of_birth = models.DateField(blank=True, null=True)
     pincode = models.CharField(max_length=10, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
+    nationality = models.CharField(max_length=100, blank=True, null=True)
 
     STATES = [
         ('Andhra Pradesh', 'Andhra Pradesh'),
@@ -67,7 +67,7 @@ class Player(models.Model):
     district = models.CharField(max_length=100, blank=True, null=True)
     role = models.CharField(max_length=100, blank=True, null=True)
 
-    # Sports Related
+    # Sports Related Information
     batting_style = models.CharField(max_length=100, blank=True, null=True)
     bowling_style = models.CharField(max_length=100, blank=True, null=True)
     handedness_choices = [('R', 'Right'), ('L', 'Left')]
@@ -75,6 +75,11 @@ class Player(models.Model):
     aadhar_number = models.CharField(max_length=12, blank=True, null=True)
     sports_role = models.CharField(max_length=100, blank=True, null=True)
     id_card_number = models.CharField(max_length=50, blank=True, null=True)
+    weight = models.FloatField(blank=True, null=True)
+    height = models.FloatField(blank=True, null=True)
+    age_category = models.CharField(max_length=50, blank=True, null=True)
+    team = models.CharField(max_length=100, blank=True, null=True)
+    position = models.CharField(max_length=100, blank=True, null=True)
 
     # Files/Documents Section
     medical_certificates = models.FileField(upload_to='certificates/', blank=True, null=True)
@@ -84,7 +89,6 @@ class Player(models.Model):
 
     # Parents/Guardian Information
     guardian_name = models.CharField(max_length=100, blank=True, null=True)
-
     relation_choices = [
         ('Father', 'Father'),
         ('Mother', 'Mother'),
@@ -92,9 +96,13 @@ class Player(models.Model):
         ('Guardian', 'Guardian'),
         ('Other', 'Other')
     ]
-
     relation = models.CharField(max_length=20, choices=relation_choices, blank=True, null=True)
     guardian_mobile_number = models.CharField(max_length=15, blank=True, null=True)
+
+    # Wellness Report
+    disease = models.CharField(max_length=100, blank=True, null=True)
+    allergies = models.CharField(max_length=100, blank=True, null=True)
+    additional_information = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Player
+from .models import *
 
 class PlayerForm(forms.ModelForm):
     class Meta:
@@ -10,7 +10,8 @@ class PlayerForm(forms.ModelForm):
             'role', 'batting_style', 'bowling_style', 'handedness', 'aadhar_number', 'sports_role',
             'id_card_number', 'weight', 'height', 'age_category', 'team', 'position', 'medical_certificates',
             'aadhar_card_upload', 'pan_card_upload', 'marksheets_upload', 'guardian_name', 'relation',
-            'guardian_mobile_number', 'disease', 'allergies', 'additional_information'
+            'guardian_mobile_number', 'disease', 'allergies', 'additional_information', 'groups'
+
         ]
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
@@ -47,11 +48,12 @@ class PlayerForm(forms.ModelForm):
             'disease': forms.TextInput(attrs={'class': 'form-control'}),
             'allergies': forms.TextInput(attrs={'class': 'form-control'}),
             'additional_information': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+
+            'groups': forms.CheckboxSelectMultiple(),
         }
 
     def __init__(self, *args, **kwargs):
         super(PlayerForm, self).__init__(*args, **kwargs)
-        # Mark fields as required
         self.fields['name'].required = True
         self.fields['image'].required = True
         self.fields['email'].required = True
@@ -122,3 +124,9 @@ class PlayerForm(forms.ModelForm):
         if data and (not data.isalpha() or len(data) < 3):
             raise forms.ValidationError("District must contain only letters and be at least 3 characters long.")
         return data
+
+
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['name']

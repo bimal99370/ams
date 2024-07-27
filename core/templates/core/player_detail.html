@@ -22,9 +22,11 @@
         }
         .detail-section {
             margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ececec;
         }
         .detail-section h2 {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             color: #6200EE;
             border-bottom: 2px solid #6200EE;
             padding-bottom: 5px;
@@ -43,6 +45,22 @@
             display: block;
             margin-top: 10px;
         }
+        .btn-primary {
+            background-color: #6200EE;
+            border-color: #6200EE;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        .btn-primary:hover {
+            background-color: #3700b3;
+            border-color: #3700b3;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
     </style>
 </head>
 <body>
@@ -59,10 +77,14 @@
         <p><span>Primary Contact Number:</span> {{ player.primary_contact_number }}</p>
         <p><span>Secondary Contact Number:</span> {{ player.secondary_contact_number }}</p>
         <p><span>Gender:</span> {{ player.gender }}</p>
+        <p><span>Nationality:</span> {{ player.nationality }}</p>
         <p><span>State:</span> {{ player.state }}</p>
         <p><span>District:</span> {{ player.district }}</p>
         <p><span>Pincode:</span> {{ player.pincode }}</p>
         <p><span>Address:</span> {{ player.address }}</p>
+        <p><span>Age Category:</span> {{ player.age_category }}</p>
+        <p><span>Team:</span> {{ player.team }}</p>
+        <p><span>Position:</span> {{ player.position }}</p>
         {% if player.image %}
             <p><span>Image:</span>
                 <a href="{{ player.image.url }}" target="_blank">
@@ -82,6 +104,8 @@
         <p><span>Aadhar Number:</span> {{ player.aadhar_number }}</p>
         <p><span>Sports Role:</span> {{ player.sports_role }}</p>
         <p><span>ID Card Number:</span> {{ player.id_card_number }}</p>
+        <p><span>Height:</span> {{ player.height }} cm</p>
+        <p><span>Weight:</span> {{ player.weight }} kg</p>
     </div>
 
     <!-- Files and Documents Uploads Section -->
@@ -99,6 +123,20 @@
         <p><span>Guardian Name:</span> {{ player.guardian_name }}</p>
         <p><span>Relation:</span> {{ player.relation }}</p>
         <p><span>Guardian Mobile Number:</span> {{ player.guardian_mobile_number }}</p>
+    </div>
+
+    <!-- Groups Section -->
+    <div class="detail-section">
+        <h2>{{ player.name }} is in below Groups</h2>
+        {% if player.groups.all %}
+            <ul>
+                {% for group in player.groups.all %}
+                    <li>{{ group.name }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No groups assigned.</p>
+        {% endif %}
     </div>
 
     <div class="d-flex justify-content-between mt-4">

@@ -1,6 +1,13 @@
 from django.db import models
 from datetime import date
 
+
+class Group(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
 class Player(models.Model):
     # Player Information
     name = models.CharField(max_length=100)
@@ -103,6 +110,9 @@ class Player(models.Model):
     disease = models.CharField(max_length=100, blank=True, null=True)
     allergies = models.CharField(max_length=100, blank=True, null=True)
     additional_information = models.TextField(blank=True, null=True)
+
+    groups = models.ManyToManyField(Group, blank=True)
+
 
     def __str__(self):
         return self.name

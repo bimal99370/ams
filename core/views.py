@@ -5,16 +5,20 @@ from openpyxl import Workbook
 from openpyxl.styles import Font
 from .models import Player, Group
 from .forms import PlayerForm, GroupForm
+from django.http import JsonResponse
+
 
 # View to list all players
 def player_list(request):
     players = Player.objects.all()
     return render(request, 'core/player_list.html', {'players': players})
 
+
 # View to display a single player's details
 def player_detail(request, pk):
     player = get_object_or_404(Player, pk=pk)
     return render(request, 'core/player_detail.html', {'player': player})
+
 
 # View to create a new player
 def player_create(request):
@@ -30,6 +34,7 @@ def player_create(request):
     else:
         form = PlayerForm()
     return render(request, 'core/player_form.html', {'form': form, 'title': 'Create Player'})
+
 
 # View to update an existing player
 def player_update(request, pk):
@@ -47,6 +52,7 @@ def player_update(request, pk):
         form = PlayerForm(instance=player)
     return render(request, 'core/player_form.html', {'form': form, 'title': 'Update Player'})
 
+
 # View to delete a player
 def player_delete(request, pk):
     player = get_object_or_404(Player, pk=pk)
@@ -55,6 +61,7 @@ def player_delete(request, pk):
         messages.success(request, 'Player deleted successfully!')
         return redirect('player_list')
     return render(request, 'core/player_confirm_delete.html', {'player': player})
+
 
 # View to export players to Excel
 def export_players_to_excel(request):
@@ -107,7 +114,6 @@ def export_players_to_excel(request):
     return response
 
 
-
 # --------------------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -119,37 +125,50 @@ def export_players_to_excel(request):
 def manage_groups(request):
     groups = Group.objects.all()
     players = Player.objects.all()
+    group_form = GroupForm()
 
     if request.method == "POST":
         if 'create_group' in request.POST:
             group_form = GroupForm(request.POST)
             if group_form.is_valid():
-                group_form.save()
+                group = group_form.save()
+                player_ids = request.POST.getlist('group_players')
+                for player_id in player_ids:
+                    player = Player.objects.get(pk=player_id)
+                    player.groups.add(group)
                 return redirect('manage_groups')
         elif 'update_group' in request.POST:
-            group = get_object_or_404(Group, pk=request.POST.get('group_id'))
+            group_id = request.POST.get('group_id')
+            print(f"Updating group with id: {group_id}")  # Debug statement
+            group = get_object_or_404(Group, pk=group_id)
             group_form = GroupForm(request.POST, instance=group)
             if group_form.is_valid():
                 group_form.save()
                 return redirect('manage_groups')
         elif 'delete_group' in request.POST:
-            group = get_object_or_404(Group, pk=request.POST.get('group_id'))
+            group_id = request.POST.get('group_id')
+            print(f"Deleting group with id: {group_id}")  # Debug statement
+            group = get_object_or_404(Group, pk=group_id)
             group.delete()
             return redirect('manage_groups')
         elif 'add_player_to_group' in request.POST:
-            group = get_object_or_404(Group, pk=request.POST.get('group_id'))
-            player = get_object_or_404(Player, pk=request.POST.get('player_id'))
+            group_id = request.POST.get('group_id')
+            player_id = request.POST.get('player_id')
+            print(f"Adding player {player_id} to group {group_id}")  # Debug statement
+            group = get_object_or_404(Group, pk=group_id)
+            player = get_object_or_404(Player, pk=player_id)
             player.groups.add(group)
             player.save()
             return redirect('manage_groups')
         elif 'remove_player_from_group' in request.POST:
-            group = get_object_or_404(Group, pk=request.POST.get('group_id'))
-            player = get_object_or_404(Player, pk=request.POST.get('player_id'))
+            group_id = request.POST.get('group_id')
+            player_id = request.POST.get('player_id')
+            print(f"Removing player {player_id} from group {group_id}")  # Debug statement
+            group = get_object_or_404(Group, pk=group_id)
+            player = get_object_or_404(Player, pk=player_id)
             player.groups.remove(group)
             player.save()
             return redirect('manage_groups')
-    else:
-        group_form = GroupForm()
 
     context = {
         'groups': groups,
@@ -157,3 +176,15 @@ def manage_groups(request):
         'group_form': group_form
     }
     return render(request, 'core/player_group_manage.html', context)
+
+def delete_group(request, group_id):
+    print(f"Delete group function called for group id: {group_id}")  # Debug statement
+    group = get_object_or_404(Group, pk=group_id)
+    group.delete()
+    return redirect('manage_groups')
+
+def get_group_players(request):
+    group_id = request.GET.get('group_id')
+    group = get_object_or_404(Group, pk=group_id)
+    players = group.player_set.all().values('pk', 'name', 'image')
+    return JsonResponse({'players': list(players)})

@@ -11,7 +11,7 @@ class Group(models.Model):
 class Player(models.Model):
     # Player Information
     name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='images/', null=True)
+    image = models.ImageField(upload_to='images/', null=True, blank=True, default='images/default_profile.jpg')
     email = models.EmailField(blank=True, null=True)
     primary_contact_number = models.CharField(max_length=15, blank=True, null=True)
     secondary_contact_number = models.CharField(max_length=15, blank=True, null=True)

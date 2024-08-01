@@ -19,4 +19,9 @@ urlpatterns = [
                   path("upload/", views.upload_file, name="upload_file"),
                   path('download-blank-excel/', views.download_blank_excel, name='download_blank_excel'),
 
+                  path('groups/', views.manage_all_groups, name='manage_all_groups'),
+                  path('get_all_players/', views.get_all_players, name='get_all_players'),
+
+                  path('update_group/',views.update_group, name='update_group'),
+
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

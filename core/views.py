@@ -55,14 +55,7 @@ def player_update(request, pk):
     return render(request, 'core/player_form.html', {'form': form, 'title': 'Update Player'})
 
 
-# View to delete a player
-# def player_delete(request, pk):
-#     player = get_object_or_404(Player, pk=pk)
-#     if request.method == 'POST':
-#         player.delete()
-#         messages.success(request, 'Player deleted successfully!')
-#         return redirect('player_list')
-#     return render(request, 'core/player_confirm_delete.html', {'player': player})
+
 
 def player_delete(request, pk):
     player = get_object_or_404(Player, pk=pk)
@@ -195,7 +188,6 @@ def manage_groups(request):
                 return redirect('manage_groups')
         elif 'update_group' in request.POST:
             group_id = request.POST.get('group_id')
-            print(f"Updating group with id: {group_id}")  # Debug statement
             group = get_object_or_404(Group, pk=group_id)
             group_form = GroupForm(request.POST, instance=group)
             if group_form.is_valid():
@@ -205,27 +197,22 @@ def manage_groups(request):
                 return redirect('manage_groups')
         elif 'delete_group' in request.POST:
             group_id = request.POST.get('group_id')
-            print(f"Deleting group with id: {group_id}")  # Debug statement
             group = get_object_or_404(Group, pk=group_id)
             group.delete()
             return redirect('manage_groups')
         elif 'add_player_to_group' in request.POST:
             group_id = request.POST.get('group_id')
             player_id = request.POST.get('player_id')
-            print(f"Adding player {player_id} to group {group_id}")  # Debug statement
             group = get_object_or_404(Group, pk=group_id)
             player = get_object_or_404(Player, pk=player_id)
             player.groups.add(group)
-            player.save()
             return redirect('manage_groups')
         elif 'remove_player_from_group' in request.POST:
             group_id = request.POST.get('group_id')
             player_id = request.POST.get('player_id')
-            print(f"Removing player {player_id} from group {group_id}")  # Debug statement
             group = get_object_or_404(Group, pk=group_id)
             player = get_object_or_404(Player, pk=player_id)
             player.groups.remove(group)
-            player.save()
             return redirect('manage_groups')
 
     context = {
@@ -245,6 +232,52 @@ def get_group_players(request):
     group_id = request.GET.get('group_id')
     group = get_object_or_404(Group, pk=group_id)
     players = group.player_set.all().values('pk', 'name', 'image')
+    return JsonResponse({'players': list(players)})
+
+def manage_all_groups(request):
+    if request.method == 'POST':
+        group_id = request.POST.get('group_id')
+        action = request.POST.get('action')
+        player_ids = request.POST.getlist('player_ids')
+
+        group = get_object_or_404(Group, pk=group_id)
+        players = Player.objects.filter(pk__in=player_ids)
+
+        if action == 'add':
+            for player in players:
+                player.groups.add(group)
+            messages.success(request, 'Players added to group successfully!')
+        elif action == 'remove':
+            for player in players:
+                player.groups.remove(group)
+            messages.success(request, 'Players removed from group successfully!')
+
+        return redirect('manage_groups')  # Adjust this to your actual URL name for managing groups
+
+    groups = Group.objects.all()
+    players = Player.objects.all()
+
+    context = {
+        'groups': groups,
+        'players': players
+    }
+
+    return render(request, 'core/add_player_to_group.html', context)
+
+
+def update_group(request):
+    if request.method == 'POST':
+        group_id = request.POST.get('group_id')
+        new_name = request.POST.get('name')
+
+        group = get_object_or_404(Group, pk=group_id)
+        group.name = new_name
+        group.save()
+        return redirect('manage_groups')  # Redirect to your groups management page
+
+
+def get_all_players(request):
+    players = Player.objects.all().values('pk', 'name', 'image')
     return JsonResponse({'players': list(players)})
 
 

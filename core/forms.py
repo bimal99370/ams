@@ -130,3 +130,6 @@ class GroupForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = ['name']
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField()

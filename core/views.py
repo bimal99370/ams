@@ -55,13 +55,18 @@ def player_update(request, pk):
     return render(request, 'core/player_form.html', {'form': form, 'title': 'Update Player'})
 
 
-
-
+# View to delete an existing player
 def player_delete(request, pk):
     player = get_object_or_404(Player, pk=pk)
     player.delete()
     messages.success(request, 'Player deleted successfully!')
     return redirect('player_list')
+
+
+# --------------------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -132,154 +137,8 @@ def export_players_to_excel(request):
     return response
 
 
-def download_blank_excel(request):
-    # Get the model fields
-    fields = Player._meta.get_fields()
 
-    # Extract field names, replace spaces with underscores, and ensure they are in lowercase
-    headers = [
-        field.name.replace(' ', '_').lower()
-        for field in fields
-        if field.name != 'id' and not field.many_to_one and not field.one_to_many
-    ]
-
-    # Create a new Workbook and select the active worksheet
-    workbook = Workbook()
-    sheet = workbook.active
-    sheet.title = 'Players'
-
-    # Append the headers to the sheet
-    sheet.append(headers)
-
-    # Make header row bold
-    for cell in sheet[1]:
-        cell.font = Font(bold=True)
-
-    # Create the HTTP response
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=blank_players.xlsx'
-    workbook.save(response)
-
-    return response
-
-
-# --------------------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------------------------------
-# --------------------------------------------------------------------------------------------------------------------------------
-
-
-
-# View to manage player groups (create/update/delete groups)
-def manage_groups(request):
-    groups = Group.objects.all()
-    players = Player.objects.all()
-    group_form = GroupForm()
-
-    if request.method == "POST":
-        if 'create_group' in request.POST:
-            group_form = GroupForm(request.POST)
-            if group_form.is_valid():
-                group = group_form.save()
-                player_ids = request.POST.getlist('group_players')
-                for player_id in player_ids:
-                    player = Player.objects.get(pk=player_id)
-                    player.groups.add(group)
-                return redirect('manage_groups')
-        elif 'update_group' in request.POST:
-            group_id = request.POST.get('group_id')
-            group = get_object_or_404(Group, pk=group_id)
-            group_form = GroupForm(request.POST, instance=group)
-            if group_form.is_valid():
-                group_form.save()
-                player_ids = request.POST.getlist('group_players')
-                group.player_set.set(player_ids)  # Update the group with new players
-                return redirect('manage_groups')
-        elif 'delete_group' in request.POST:
-            group_id = request.POST.get('group_id')
-            group = get_object_or_404(Group, pk=group_id)
-            group.delete()
-            return redirect('manage_groups')
-        elif 'add_player_to_group' in request.POST:
-            group_id = request.POST.get('group_id')
-            player_id = request.POST.get('player_id')
-            group = get_object_or_404(Group, pk=group_id)
-            player = get_object_or_404(Player, pk=player_id)
-            player.groups.add(group)
-            return redirect('manage_groups')
-        elif 'remove_player_from_group' in request.POST:
-            group_id = request.POST.get('group_id')
-            player_id = request.POST.get('player_id')
-            group = get_object_or_404(Group, pk=group_id)
-            player = get_object_or_404(Player, pk=player_id)
-            player.groups.remove(group)
-            return redirect('manage_groups')
-
-    context = {
-        'groups': groups,
-        'players': players,
-        'group_form': group_form
-    }
-    return render(request, 'core/player_group_manage.html', context)
-
-def delete_group(request, group_id):
-    print(f"Delete group function called for group id: {group_id}")  # Debug statement
-    group = get_object_or_404(Group, pk=group_id)
-    group.delete()
-    return redirect('manage_groups')
-
-def get_group_players(request):
-    group_id = request.GET.get('group_id')
-    group = get_object_or_404(Group, pk=group_id)
-    players = group.player_set.all().values('pk', 'name', 'image')
-    return JsonResponse({'players': list(players)})
-
-def manage_all_groups(request):
-    if request.method == 'POST':
-        group_id = request.POST.get('group_id')
-        action = request.POST.get('action')
-        player_ids = request.POST.getlist('player_ids')
-
-        group = get_object_or_404(Group, pk=group_id)
-        players = Player.objects.filter(pk__in=player_ids)
-
-        if action == 'add':
-            for player in players:
-                player.groups.add(group)
-            messages.success(request, 'Players added to group successfully!')
-        elif action == 'remove':
-            for player in players:
-                player.groups.remove(group)
-            messages.success(request, 'Players removed from group successfully!')
-
-        return redirect('manage_groups')  # Adjust this to your actual URL name for managing groups
-
-    groups = Group.objects.all()
-    players = Player.objects.all()
-
-    context = {
-        'groups': groups,
-        'players': players
-    }
-
-    return render(request, 'core/add_player_to_group.html', context)
-
-
-def update_group(request):
-    if request.method == 'POST':
-        group_id = request.POST.get('group_id')
-        new_name = request.POST.get('name')
-
-        group = get_object_or_404(Group, pk=group_id)
-        group.name = new_name
-        group.save()
-        return redirect('manage_groups')  # Redirect to your groups management page
-
-
-def get_all_players(request):
-    players = Player.objects.all().values('pk', 'name', 'image')
-    return JsonResponse({'players': list(players)})
-
+# View to import players to Excel
 
 import logging
 logger = logging.getLogger(__name__)
@@ -349,3 +208,146 @@ def upload_file(request):
     else:
         form = UploadFileForm()
     return render(request, "player_list.html", {"form": form})
+
+
+
+
+def download_blank_excel(request):
+    # Get the model fields
+    fields = Player._meta.get_fields()
+
+    # Extract field names, replace spaces with underscores, and ensure they are in lowercase
+    headers = [
+        field.name.replace(' ', '_').lower()
+        for field in fields
+        if field.name != 'id' and not field.many_to_one and not field.one_to_many
+    ]
+
+    # Create a new Workbook and select the active worksheet
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = 'Players'
+
+    # Append the headers to the sheet
+    sheet.append(headers)
+
+    # Make header row bold
+    for cell in sheet[1]:
+        cell.font = Font(bold=True)
+
+    # Create the HTTP response
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=blank_players.xlsx'
+    workbook.save(response)
+
+    return response
+
+
+# --------------------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------
+
+
+
+def get_group_players(request):
+    group_id = request.GET.get('group_id')
+    group = get_object_or_404(Group, pk=group_id)
+    players = group.player_set.all().values('pk', 'name', 'image')
+    return JsonResponse({'players': list(players)})
+
+
+def get_all_players(request):
+    players = Player.objects.all().values('pk', 'name', 'image')
+    return JsonResponse({'players': list(players)})
+
+
+
+
+
+
+# View to manage player groups (create/delete groups)
+def manage_groups(request):
+    groups = Group.objects.all()
+    players = Player.objects.all()
+    group_form = GroupForm()
+
+    if request.method == "POST":
+        if 'create_group' in request.POST:
+            group_form = GroupForm(request.POST)
+            if group_form.is_valid():
+                group = group_form.save()
+                player_ids = request.POST.getlist('group_players')
+                for player_id in player_ids:
+                    player = Player.objects.get(pk=player_id)
+                    player.groups.add(group)
+                return redirect('manage_groups')
+        elif 'remove_player_from_group' in request.POST:
+            group_id = request.POST.get('group_id')
+            player_id = request.POST.get('player_id')
+            group = get_object_or_404(Group, pk=group_id)
+            player = get_object_or_404(Player, pk=player_id)
+            player.groups.remove(group)
+            return redirect('manage_groups')
+
+    context = {
+        'groups': groups,
+        'players': players,
+        'group_form': group_form
+    }
+    return render(request, 'core/player_group_manage.html', context)
+
+
+
+
+# Adjust this to our main player_group_manage.html as a modal
+def manage_all_groups(request):
+    if request.method == 'POST':
+        group_id = request.POST.get('group_id')
+        action = request.POST.get('action')
+        player_ids = request.POST.getlist('player_ids')
+
+        group = get_object_or_404(Group, pk=group_id)
+        players = Player.objects.filter(pk__in=player_ids)
+
+        if action == 'add':
+            for player in players:
+                player.groups.add(group)
+            messages.success(request, 'Players added to group successfully!')
+        elif action == 'remove':
+            for player in players:
+                player.groups.remove(group)
+            messages.success(request, 'Players removed from group successfully!')
+
+        return redirect('manage_groups')  # Adjust this to your actual URL name for managing groups
+
+    groups = Group.objects.all()
+    players = Player.objects.all()
+
+    context = {
+        'groups': groups,
+        'players': players
+    }
+
+    return render(request, 'core/add_player_to_group.html', context)
+
+
+
+def update_group(request):
+    if request.method == 'POST':
+        group_id = request.POST.get('group_id')
+        new_name = request.POST.get('name')
+
+        group = get_object_or_404(Group, pk=group_id)
+        group.name = new_name
+        group.save()
+        return redirect('manage_groups')  # Redirect to your groups management page
+
+
+def delete_group(request, group_id):
+    print(f"Delete group function called for group id: {group_id}")  # Debug statement
+    group = get_object_or_404(Group, pk=group_id)
+    group.delete()
+    return redirect('manage_groups')
+
+

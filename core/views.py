@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.contrib import messages
 from openpyxl import Workbook
@@ -6,6 +7,7 @@ from openpyxl.styles import Font
 from .models import Player, Group
 from .forms import PlayerForm, GroupForm
 from django.http import JsonResponse
+import json
 import pandas as pd
 from .forms import UploadFileForm
 
@@ -250,7 +252,7 @@ def download_blank_excel(request):
 
 
 
-def get_group_players(request):
+def get_all_group_players(request):
     group_id = request.GET.get('group_id')
     group = get_object_or_404(Group, pk=group_id)
     players = group.player_set.all().values('pk', 'name', 'image')
@@ -331,17 +333,24 @@ def manage_all_groups(request):
 
     return render(request, 'core/add_player_to_group.html', context)
 
-
-
-def update_group(request):
+@csrf_exempt
+def rename_group(request):
     if request.method == 'POST':
-        group_id = request.POST.get('group_id')
-        new_name = request.POST.get('name')
+        data = json.loads(request.body)
+        group_id = data.get('group_id')
+        new_name = data.get('new_name')
 
-        group = get_object_or_404(Group, pk=group_id)
-        group.name = new_name
-        group.save()
-        return redirect('manage_groups')  # Redirect to your groups management page
+        try:
+            group = Group.objects.get(id=group_id)
+            group.name = new_name
+            group.save()
+            return JsonResponse({'success': True})
+        except Group.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Group not found'})
+
+    return JsonResponse({'success': False, 'message': 'Invalid request'})
+
+
 
 
 def delete_group(request, group_id):

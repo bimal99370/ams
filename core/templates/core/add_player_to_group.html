@@ -61,11 +61,28 @@
             color: #fff; /* White text */
             border: 1px solid #555; /* Slightly lighter grey border */
         }
+        .form-inline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .rename-group-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        .rename-group-wrapper input {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        .search-bar {
+            display: flex;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center">Manage All Groups</h1>
+        <h3 class="text-center">Manage All Groups</h3>
         <div class="card">
             <div class="card-body">
                 <form method="post" action="{% url 'manage_all_groups' %}">
@@ -79,6 +96,13 @@
                                 <option value="{{ group.id }}">{{ group.name }}</option>
                             {% endfor %}
                         </select>
+                    </div>
+
+                    <!-- Renaming Group Section -->
+                    <div class="form-group rename-group-wrapper">
+                        <label for="rename-group">Rename Group:</label>
+                        <input type="text" class="form-control" id="rename-group" placeholder="Enter new group name">
+                        <button type="button" class="btn btn-primary" onclick="renameGroup()">Rename Group</button>
                     </div>
 
                     <div class="search-bar">
@@ -115,89 +139,133 @@
                         </div>
                     </div>
                 </form>
-
-
             </div>
         </div>
     </div>
 
-    <script>
-        function fetchGroupPlayers(groupId) {
-            if (groupId) {
-                fetch(`/get_group_players/?group_id=${groupId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const groupPlayersList = document.getElementById('group-players-list');
-                        const otherPlayersList = document.getElementById('other-players-list');
-                        groupPlayersList.innerHTML = '';
-                        otherPlayersList.innerHTML = '';
-
-                        const groupPlayerIds = data.players.map(player => player.pk);
-
-                        data.players.forEach(player => {
-                            const playerItem = document.createElement('li');
-                            playerItem.className = 'list-group-item';
-
-                            const playerCheckbox = document.createElement('input');
-                            playerCheckbox.type = 'checkbox';
-                            playerCheckbox.name = 'player_ids';
-                            playerCheckbox.value = player.pk;
-                            playerCheckbox.checked = true;
-                            playerItem.appendChild(playerCheckbox);
-
-                            const playerLabel = document.createElement('span');
-                            playerLabel.textContent = player.name;
-                            playerLabel.className = 'ml-2';
-                            playerItem.appendChild(playerLabel);
-
-                            groupPlayersList.appendChild(playerItem);
-                        });
-
-                        fetch(`/get_all_players/`)
-                            .then(response => response.json())
-                            .then(data => {
-                                data.players.forEach(player => {
-                                    if (!groupPlayerIds.includes(player.pk)) {
-                                        const playerItem = document.createElement('li');
-                                        playerItem.className = 'list-group-item';
-
-                                        const playerCheckbox = document.createElement('input');
-                                        playerCheckbox.type = 'checkbox';
-                                        playerCheckbox.name = 'player_ids';
-                                        playerCheckbox.value = player.pk;
-                                        playerItem.appendChild(playerCheckbox);
-
-                                        const playerLabel = document.createElement('span');
-                                        playerLabel.textContent = player.name;
-                                        playerLabel.className = 'ml-2';
-                                        playerItem.appendChild(playerLabel);
-
-                                        otherPlayersList.appendChild(playerItem);
-                                    }
-                                });
-                            });
-
-                        document.getElementById('player-selection').style.display = 'block';
-                    });
-            } else {
-                document.getElementById('player-selection').style.display = 'none';
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
 
-        function searchPlayers() {
-            const input = document.getElementById('player-search');
-            const filter = input.value.toLowerCase();
-            const players = document.querySelectorAll('.list-group-item');
+    function fetchGroupPlayers(groupId) {
+        if (groupId) {
+            fetch(`/get_group_players/?group_id=${groupId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const groupPlayersList = document.getElementById('group-players-list');
+                    const otherPlayersList = document.getElementById('other-players-list');
+                    groupPlayersList.innerHTML = '';
+                    otherPlayersList.innerHTML = '';
 
-            players.forEach(player => {
-                if (player.textContent.toLowerCase().includes(filter)) {
-                    player.style.display = '';
-                } else {
-                    player.style.display = 'none';
-                }
-            });
+                    const groupPlayerIds = data.players.map(player => player.pk);
+
+                    data.players.forEach(player => {
+                        const playerItem = document.createElement('li');
+                        playerItem.className = 'list-group-item';
+
+                        const playerCheckbox = document.createElement('input');
+                        playerCheckbox.type = 'checkbox';
+                        playerCheckbox.name = 'player_ids';
+                        playerCheckbox.value = player.pk;
+                        playerCheckbox.checked = true;
+                        playerItem.appendChild(playerCheckbox);
+
+                        const playerLabel = document.createElement('span');
+                        playerLabel.textContent = player.name;
+                        playerLabel.className = 'ml-2';
+                        playerItem.appendChild(playerLabel);
+
+                        groupPlayersList.appendChild(playerItem);
+                    });
+
+                    fetch(`/get_all_players/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.players.forEach(player => {
+                                if (!groupPlayerIds.includes(player.pk)) {
+                                    const playerItem = document.createElement('li');
+                                    playerItem.className = 'list-group-item';
+
+                                    const playerCheckbox = document.createElement('input');
+                                    playerCheckbox.type = 'checkbox';
+                                    playerCheckbox.name = 'player_ids';
+                                    playerCheckbox.value = player.pk;
+                                    playerItem.appendChild(playerCheckbox);
+
+                                    const playerLabel = document.createElement('span');
+                                    playerLabel.textContent = player.name;
+                                    playerLabel.className = 'ml-2';
+                                    playerItem.appendChild(playerLabel);
+
+                                    otherPlayersList.appendChild(playerItem);
+                                }
+                            });
+                        });
+
+                    document.getElementById('player-selection').style.display = 'block';
+                });
+        } else {
+            document.getElementById('player-selection').style.display = 'none';
         }
-    </script>
+    }
+
+    function searchPlayers() {
+        const input = document.getElementById('player-search');
+        const filter = input.value.toLowerCase();
+        const players = document.querySelectorAll('.list-group-item');
+
+        players.forEach(player => {
+            if (player.textContent.toLowerCase().includes(filter)) {
+                player.style.display = '';
+            } else {
+                player.style.display = 'none';
+            }
+        });
+    }
+
+    function renameGroup() {
+        const groupId = document.getElementById('group').value;
+        const newName = document.getElementById('rename-group').value;
+
+        if (groupId && newName) {
+            fetch(`/rename_group/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({
+                    group_id: groupId,
+                    new_name: newName
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Group renamed successfully!');
+                    location.reload();
+                    } else {
+                        alert('Failed to rename group. Please try again.');
+                    }
+                });
+        } else {
+            alert('Please select a group and enter a new name.');
+        }
+    }
+</script>
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -205,3 +273,4 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+

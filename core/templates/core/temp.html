@@ -179,15 +179,16 @@
     .modal-lg {
         max-width: 600px; /* Adjust modal width */
     }
-
-    .right-content {
-        border-left: 1px solid #444; /* Dark grey border */
-        padding-left: 15px;
-    }
 </style>
 {% endblock %}
 
 {% block content %}
+
+
+<button type="button" class="btn btn-primary btn-modal" data-toggle="modal" data-target="#managePlayersModal">
+    Add/Remove Players from Group
+</button>
+
 <div class="row">
     <!-- Left Side: List of Groups and Players in Selected Group -->
     <div class="col-md-8">
@@ -207,7 +208,9 @@
                     </li>
                     {% endfor %}
                 </ul>
-                <button class="btn btn-primary add-group-btn" data-toggle="modal" data-target="#createGroupModal">Create Group</button>
+                <button class="btn btn-primary add-group-btn" data-toggle="modal" data-target="#createGroupModal">Create
+                    Group
+                </button>
                 <div class="d-flex">
                     <a href="{% url 'player_create' %}" class="btn btn-primary">Add New Player</a>
                 </div>
@@ -223,19 +226,36 @@
         </div>
     </div>
 
-    <!-- Right Side: Add/Remove Players from Group -->
-    <div class="col-md-4 right-content">
-        <button type="button" class="btn btn-primary btn-modal" id="managePlayersBtn">
-            Add/Remove Players from Group
-        </button>
-        <div id="rightContent" class="mt-3">
-            <!-- The content will be loaded here dynamically -->
+    <!-- Right Side: Blank Space for Modal -->
+    <div class="col-md-4"></div>
+</div>
+</div>
+
+<!-- Manage Players Modal -->
+<div class="modal fade" id="managePlayersModal" tabindex="-1" role="dialog" aria-labelledby="managePlayersModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="managePlayersModalLabel">Manage Players in Groups</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- The content will be loaded here dynamically -->
+                <div id="modal-body-content"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Create Group Modal -->
-<div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-labelledby="createGroupModalLabel" aria-hidden="true">
+<div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-labelledby="createGroupModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -255,8 +275,10 @@
                         <label for="groupPlayers">Select Players</label>
                         <div id="groupPlayers" class="player-select-list">
                             {% for player in players %}
-                            <div class="player-select-container" id="player-{{ player.pk }}" onclick="togglePlayerSelection({{ player.pk }})">
-                                <input type="checkbox" id="player_{{ player.pk }}" name="group_players" value="{{ player.pk }}">
+                            <div class="player-select-container" id="player-{{ player.pk }}"
+                                 onclick="togglePlayerSelection({{ player.pk }})">
+                                <input type="checkbox" id="player_{{ player.pk }}" name="group_players"
+                                       value="{{ player.pk }}">
                                 <label for="player_{{ player.pk }}">{{ player.name }}</label>
                                 <span class="checkmark">✔</span>
                             </div>
@@ -338,12 +360,12 @@
     }
 
     $(document).ready(function() {
-        $('#managePlayersBtn').click(function() {
+        $('#managePlayersModal').on('show.bs.modal', function (e) {
             $.ajax({
                 url: "{% url 'manage_all_groups' %}",
                 type: 'get',
                 success: function(data) {
-                    $('#rightContent').html(data);
+                    $('#modal-body-content').html(data);
                 }
             });
         });
